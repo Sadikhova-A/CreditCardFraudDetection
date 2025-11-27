@@ -3,12 +3,35 @@ import pandas as pd
 import matplotlib.pyplot as plt 
 from sklearn.preprocessing import StandardScaler
 from imblearn.over_sampling import RandomOverSampler
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import precision_score, recall_score
 
 # Read the dataset
-df = pd.read_csv("Data\\creditcard.csv")  # Source: kagglehub - credit card fraud
+df = pd.read_csv("Data\\creditcard.csv")  # Source: Kaggle 'https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud'
 
 # Splitting the data into test, train and validation sets
-train, valid, test = np.split(df.sample(frac=1), [int(0.6 * len(df)), int(0.8) * len(df)])
+train, valid, test = np.split(
+                    df.sample(frac=1),
+                    [int(0.6 * len(df)), int(0.8 * len(df))]
+)
+
+def sanityCheck(tra, tes, val):
+    '''Print sample heads and sizes of the data splits'''
+
+    print('\n----  TRAINING DATA  ----')
+    print(tra.head())
+    print('\n----  TESTING DATA  ----')
+    print(tes.head())
+    print('\n----  VALIDATION DATA  ----')
+    print(val.head())
+    
+    print('\nTraining Data Length')
+    print(len(tra))
+    print('\nTesting Data Length')
+    print(len(tes))
+    print('\nValidation Data Length')
+    print(len(val))
+
 
 
 # Scales data frame
@@ -26,8 +49,30 @@ def scaledData(dataframe, oversample = False):
 
     return data, x, y
 
-train, x_train, y_train = scaledData(df, True)
-print(len(y_train))
+train, x_train, y_train = scaledData(train, True)
+test, x_test, y_test = scaledData(test, True)
+valid, x_valid, y_valid = scaledData(valid)
 
-print(len(y_train[y_train==0]))
-print(len(y_train[y_train==1]))
+
+# LOGISTIC REGRESSION
+Lizzy = LogisticRegression()
+Lizzy.fit(x_train, y_train)
+
+liz_predTest = Lizzy.predict(x_test)
+
+print(recall_score(y_test, liz_predTest))
+print(precision_score(y_test, liz_predTest))
+#liz_predValid = Lizzy.predict(valid)
+
+
+
+# print("Confusion Matrix:\n", confusion_matrix(y_test, liz_predTest))
+# AND KNN
+
+# FOR KNN FIRST TRY N=3 and N=5 
+# THEN TRY CROSS VALIDATION TO FIND A BETTER K
+
+# TRY SVM
+
+
+# sanityCheck(train, test, valid)
