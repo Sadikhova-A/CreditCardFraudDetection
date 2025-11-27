@@ -5,6 +5,8 @@ from sklearn.preprocessing import StandardScaler
 from imblearn.over_sampling import RandomOverSampler
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import precision_score, recall_score
+from sklearn.neighbors import KNeighborsClassifier
+
 
 # Read the dataset
 df = pd.read_csv("Data\\creditcard.csv")  # Source: Kaggle 'https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud'
@@ -50,24 +52,30 @@ def scaledData(dataframe, oversample = False):
     return data, x, y
 
 train, x_train, y_train = scaledData(train, True)
-test, x_test, y_test = scaledData(test, True)
+test, x_test, y_test = scaledData(test)
 valid, x_valid, y_valid = scaledData(valid)
 
 
-# LOGISTIC REGRESSION
-Lizzy = LogisticRegression()
-Lizzy.fit(x_train, y_train)
+# Logistic Regression Model, Liz
+liz = LogisticRegression()
+liz.fit(x_train, y_train)
 
-liz_predTest = Lizzy.predict(x_test)
+testP_liz = liz.predict(x_test)
 
-print(recall_score(y_test, liz_predTest))
-print(precision_score(y_test, liz_predTest))
-#liz_predValid = Lizzy.predict(valid)
+print('LOGISTIC REGRESSION')
+print(recall_score(y_test, testP_liz))
+print(precision_score(y_test, testP_liz))
 
+# KNN Model, Kenny
+# kenny = KNeighborsClassifier(n_neighbors=3)  # N = 3
+# kenny.fit(x_train, y_train)
 
+# testP_ken = kenny.predict(x_test)
 
-# print("Confusion Matrix:\n", confusion_matrix(y_test, liz_predTest))
-# AND KNN
+# print('KNN')
+# print(recall_score(y_test, testP_ken))
+# print(precision_score(y_test, testP_ken))
+
 
 # FOR KNN FIRST TRY N=3 and N=5 
 # THEN TRY CROSS VALIDATION TO FIND A BETTER K
